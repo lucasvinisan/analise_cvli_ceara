@@ -9,40 +9,38 @@ import matplotlib.pyplot as plt
 from src.sarima import plots as grafico 
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 from statsmodels.stats.diagnostic import acorr_ljungbox
+import copy
 
 
 
-def testar_estacionariedade(serie):
+def testar_estacionariedade(df):
     #CALCULANDO O DICKEY FULLER 
 
-    resultado = adfuller(serie) 
+    resultado = adfuller(df['CVLI']) 
     
     print('Estatistica ADF: ', resultado[0]) 
     print('p-valor: ', resultado[1]) 
 
+    '''
     if (resultado[1] > 0.05):
         print('Serie não é estácionaria')
     else:
         print('Série é estacionária')
-
-    #Como a serie é não estácionária, então foi aplicado a diferenciação para tornara a série estácionária  
-
+    
+    '''
 #|-------- Modelo Sarima ------------------|
-def treinar_modelo(serie):
+def criar_modelo(df):
 
     modelo = pm.auto_arima(
-                            serie.values,
-                            start_p = 1, 
-                            max_p = 6, 
-                            start_q = 1, 
-                            max_q = 6, 
+                            df['CVLI'],
+                            start_p = 1, max_p = 6, 
+                            start_q = 1, max_q = 6, 
+                            d = 1, D = 1,
+                            exog=df[['CRISE_2017','QUEDA_2019','ANOMALIA_2020', 'REDUCAO_2026']],
                             m = 12, 
+                            stationary = False,
                             seasonal = True, 
-                            d = 1, 
-                            D = 1,
-                            test='adf',
                             trace = True, 
-                            error_action='ignore', 
                             suppress_warnings = True, 
                             stepwise = True 
     )
@@ -50,37 +48,32 @@ def treinar_modelo(serie):
     return modelo 
 
 def validar_modelo_sarima(modelo, df):
+    
+    modelo_val = copy.deepcopy(modelo)
 
-    train = df['CVLI'].loc['2014-01-01':'2023-12-01']
-    test = df['CVLI'].loc['2024-01-01':]
+    train = df.loc['2014-01-01':'2023-12-01']
+    test  = df['CVLI'].loc['2024-01-01':]
 
-    #Treinando o modelo
-    modelo.fit(train)
+    exog_train = train[['CRISE_2017', 'QUEDA_2019', 'ANOMALIA_2020', 'REDUCAO_2026']]
 
-    #Criando as previsões (Validação)
-    forecast = modelo.predict(n_periods=len(test)).astype(int)
+    exog_test = pd.DataFrame({
+        'CRISE_2017': [0] * len(test),
+        'QUEDA_2019': [0] * len(test),
+        'ANOMALIA_2020': [0] * len(test),
+        'REDUCAO_2026': [0] * len(test),
+    })
 
-    #Gerando um dataframe com os valore previstos
+    modelo_val.fit(train['CVLI'], X=exog_train)
+
+    forecast = modelo_val.predict(
+        n_periods=len(test),
+        X=exog_test
+    ).astype(int)
+
     forecast = pd.DataFrame(forecast, index=test.index, columns=['CVLI'])
 
-    return test, forecast 
+    return test, forecast
 
-def previsao_modelo(modelo, df):
-
-    serie_log = np.log1p(df['CVLI'])
-    modelo.fit(serie_log)
-
-    previsao_2026, conf_intervalo = modelo.predict(n_periods=9, return_conf_int=True)
-    
-    indice_2026 = pd.date_range(start='2026-04-01', periods=9, freq='MS')
-
-    df_2026 = pd.DataFrame({
-        'CVLI'  : np.expm1(previsao_2026).astype(int),
-        'lower' : np.expm1(conf_intervalo[:, 0]).astype(int),
-        'upper' : np.expm1(conf_intervalo[:, 1]).astype(int),
-    }, index=indice_2026)
-
-    return df_2026
 
 def  test_Ljung_Box(modelo): 
 
@@ -93,10 +86,8 @@ def calculando_metricas(test, forecast):
     
     # MAE: Média de erro absoluto 
     mae = mean_absolute_error(test, forecast)
-
-    # RMSE: Penaliza erros maiores 
+    # RMSE: Penalizaos erros maiores 
     rmse = np.sqrt(mean_squared_error(test, forecast))
-
     # MAPE: Erro percentual
     mape = np.mean(np.abs((test - forecast['CVLI']) / test)) * 100
 
@@ -106,8 +97,8 @@ def calculando_metricas(test, forecast):
 
 def transformar_DataFrame(previsao): 
 
-    datas = pd.date_range(start='2026-04', end='2026-12', freq='MS')
-    previsao = previsao.values.flatten() #A previsão retorna uma matriz 2D por isso a função 
+    datas = pd.date_range(start='2026-04', end='2026-8', freq='MS')
+    previsao = previsao.values.flatten() 
 
     df_cvli = pd.DataFrame({
     'MES': datas,
@@ -119,3 +110,32 @@ def transformar_DataFrame(previsao):
     
     return df_cvli
 
+def previsao_modelo(modelo, df):
+    n = 5
+
+    future_exog = pd.DataFrame({
+        'CRISE_2017': [0] * n,
+        'QUEDA_2019': [0] * n,
+        'ANOMALIA_2020': [0] * n,
+        'REDUCAO_2026' : [0] * n,
+    })
+
+    previsao, conf_intervalo = modelo.predict(
+        n_periods=n,
+        exogenous=future_exog,
+        return_conf_int=True,
+        alpha=0.1
+    )
+
+    indice = pd.date_range(start='2026-04-01', periods=n, freq='MS')
+
+    
+    df_2026 = pd.DataFrame({
+        'CVLI' : np.round(previsao).astype(float),
+        'lower': np.round(conf_intervalo[:, 0]).astype(float),
+        'upper': np.round(conf_intervalo[:, 1]).astype(float),
+    }, index=indice)
+
+    df_2026[['CVLI', 'lower', 'upper']] = df_2026[['CVLI', 'lower', 'upper']].clip(lower=0)
+   
+    return df_2026

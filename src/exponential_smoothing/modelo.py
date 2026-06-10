@@ -9,25 +9,25 @@ from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 from statsmodels.stats.diagnostic import acorr_ljungbox
 from sklearn.metrics import mean_absolute_error, mean_absolute_percentage_error
 from statsmodels.stats.diagnostic import acorr_ljungbox
+import copy 
 
 def modelo(df):
 
-    #É necessário construir um novo modelo para validação 
     modelo_suavizacao_exponencial = ExponentialSmoothing(
         df['CVLI'], 
-        trend='additive',
-        seasonal='additive',
+        trend='add',
+        seasonal='add',
         seasonal_periods=12
     )
 
     return modelo_suavizacao_exponencial 
 
-def validacao_modelo(modelo, df): 
-    
+def validacao_modelo(df): 
+
     train = df['2014-01-01' : '2023-12-01']
     test = df['2024-01-01': ]
 
-
+    
     modelo_treino = ExponentialSmoothing(
         train['CVLI'],
         trend='add',
@@ -36,10 +36,10 @@ def validacao_modelo(modelo, df):
     )
 
 
-    #Trianando modelo
+    #Treinando o modelo
     Modelo_Treinado_validacao = modelo_treino.fit()
 
-    #Fazendo previsão 
+    #Fazendo as previsões  
     previsao = Modelo_Treinado_validacao.forecast(len(test)).astype(int)
 
     
@@ -72,24 +72,24 @@ def  test_Ljung_Box(modelo_ajustado):
     return resultado_lb
 
 
-def previsao_intervalo_confianca(modelo, df):
+def previsao_intervalo_confianca(modelo_ajustado):
 
-    modelo_ajustado = modelo.fit()
+    periodos = 5
 
-    previsao_df = modelo_ajustado.forecast(9)
+    previsao_df = modelo_ajustado.forecast(5)
 
     simulacoes = modelo_ajustado.simulate(
-        nsimulations=9,
+        nsimulations=periodos,
         repetitions=1000,
-        error='mul'
+        error='add'
     )
 
-    indice_2026 = pd.date_range(start='2026-04-01', periods=9, freq='MS')
+    indice_2026 = pd.date_range(start='2026-04-01', periods=periodos, freq='MS')
 
     df_2026 = pd.DataFrame({
         'CVLI'  : previsao_df.values.astype(int),
-        'lower' : np.percentile(simulacoes, 2.5,  axis=1).astype(int),
-        'upper' : np.percentile(simulacoes, 97.5, axis=1).astype(int),
+        'lower' : np.percentile(simulacoes, 5.0,  axis=1).astype(int),
+        'upper' : np.percentile(simulacoes, 95.0, axis=1).astype(int),
     }, index=indice_2026)
 
     df_2026.index = df_2026.index.to_period('M')

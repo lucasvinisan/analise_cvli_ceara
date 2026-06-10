@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from statsmodels.tsa.seasonal import seasonal_decompose
 from sklearn.metrics import mean_absolute_error, mean_squared_error
+import matplotlib.dates as mdates
 
 
 #Definindo globalmente o style dos plots 
@@ -33,7 +34,7 @@ def plotar_graficos_serie (df):
 # |------------ Visualização do modelo sarima.py --------------------------|
 def plotar_validacao(test, forecast, df):
    
-    fig, ax1 = plt.subplots(figsize=(12, 8))
+    fig, ax1 = plt.subplots(figsize=(12, 5))
 
 
     train = df['2014-01-01':'2024-12-01']['CVLI']
@@ -52,8 +53,6 @@ def plotar_validacao(test, forecast, df):
 
     ax1.axvline(pd.Timestamp('2024-01-01'), linestyle=':', linewidth=1.5, label='Início do Teste')
     
-    #Calculando Metricas 
-
     # MAE: Média de erro absoluto 
     mae = mean_absolute_error(test, forecast)
 
@@ -66,16 +65,15 @@ def plotar_validacao(test, forecast, df):
     ax1.set_title(f'Sarima — Teste vs Previsão\nMAE: {mae:.1f}  |  MAPE: {mape:.1f}% | RMSE: {rmse:.1f}', fontsize=14, fontweight='bold')
 
     
-    ax1.set_xlabel('Data')
     ax1.set_ylabel('CVLI')
-    ax1.legend()
     ax1.grid(True, alpha=0.3)
+    ax1.legend()
     plt.tight_layout()
     plt.show()
 
 
 def modelo_diagnostico(modelo): 
-    modelo.plot_diagnostics()
+    modelo.plot_diagnostics(figsize=(10,8))
     plt.tight_layout()
     plt.show()
 
@@ -107,7 +105,9 @@ def tabela_comparacao(test, forecast):
 
 
 
+
 def plotar_previsao_2026(df_2026):
+    df_2026 = df_2026['2026-04-01':'2026-08-01']
     fig, ax = plt.subplots(figsize=(12, 5))
 
     datas = df_2026.index
@@ -118,12 +118,11 @@ def plotar_previsao_2026(df_2026):
         datas,
         df_2026['lower'],
         df_2026['upper'],
-        alpha=0.2,
+        alpha=0.1,
         color='blue',
-        label='IC 95%'
+        label='IC 90%'
     )
 
-    # Anotando previsão + intervalo em cada ponto
     for i, (_, row) in enumerate(df_2026.iterrows()):
         ax.annotate(
             f"{row['CVLI']}\n[{row['lower']}–{row['upper']}]",
@@ -131,15 +130,19 @@ def plotar_previsao_2026(df_2026):
             xytext=(0, 14),
             textcoords='offset points',
             ha='center',
-            fontsize=8,
-            color='black'
-        )
+            fontsize=7,
+            color='black',
+            clip_on=False 
+    )
 
-    ax.set_title('Previsão CVLI (Sarima) — Abril a Dezembro 2026', fontsize=14, fontweight='bold')
-    ax.set_xlabel('MES')
+    ax.set_ylim(bottom=0, top=df_2026['upper'].max() * 1.3)
+
+    ax.set_title('Previsão CVLI (Sarima)', fontsize=14, fontweight='bold')
     ax.set_ylabel('CVLI')
     ax.legend()
     ax.grid(True, alpha=0.3)
+    ax.xaxis.set_major_locator(mdates.MonthLocator())
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%b/%Y'))
     plt.xticks(rotation=45)
     plt.tight_layout()
     plt.show()

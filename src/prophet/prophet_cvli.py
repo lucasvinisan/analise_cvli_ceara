@@ -8,40 +8,30 @@ from src.prophet import modelo as md
 from src.prophet import plots as grafico
 
 
-def executar_prophet(df):
+def executar_prophet():
     
-    new_df = md.preparar_df(df) #Apenas modificando as colunas para implementar o prophet 
+    df = pd.read_csv("dados/dados_previsoes_tratados_media.csv", index_col=0, parse_dates=True)
 
-    new_df = new_df[(new_df['ds'] <= '2017-01-01') | (new_df['ds'] >= '2020-01-01') ] 
-    #Le em consideração esse cenário e sem ele 
+    df_prophet = df.reset_index().rename(columns={'MES': 'ds', 'CVLI': 'y'})
+    
+    #Criando o modelo a ser implmentado 
+    modelo = md.criar_modelo(df_prophet)
 
-    #validação
-    modelo, test = md.treinando_modelo(new_df) # Treinando modelo com dados de teste
-    forecast_validacao = md.validacao_modelo(modelo, test)
+    #Realizando a validação s
+    previsao, test = md.validacao_modelo(modelo, df_prophet)
 
-    md.metricas(test, forecast_validacao)
-    fig = modelo.plot(forecast_validacao)
-    plt.show()
+    grafico.plotar_validacao(df_prophet, previsao, test)
 
-    #Modelo Final 
-    modelo_final = md.modelo_final(new_df)
+    modelo_final = modelo.fit(df_prophet)
 
-    future = modelo_final.make_future_dataframe(periods=9, freq='MS')  # gera datas futuras
-    forecast_2026 = modelo_final.predict(future)
-
-    previsao = md.previsao_2026(forecast_2026)
+    previsao = md.previsao_2026(modelo_final)
 
     grafico.plotar_previsao_2026(previsao)
-
-    md.aplicando_cross_validation(modelo_final)
-
-    return previsao 
-
 
 
 '''
 
-Verificar vario modelos
+Verificar varios modelos
 
     from prophet.diagnostics import cross_validation, performance_metrics
 

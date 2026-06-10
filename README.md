@@ -6,7 +6,7 @@
 
 - **Solução**: Realizar um estudo descritivo sobre os dados acumulados de CVLI (Crimes Violentos Letais e Intencionais) entre os anos de 2014 e 2025, e implementar algoritmos preditivos com o intuito de obter possíveis cenários para os valores acumulados de CVLI no ano de 2026 no Ceará.
 
-- **Impacto:** No ano de 2025 o estado do Ceará apresentou um total de 3.178 homicidios. Partindo disso, temos que o estudo identificou tendência de queda nos número de CVLI observados no estado do ceará para o ano de 2026. Entretando, apesar da tendência de redução, os dados ainda são preocupantes, o que mostra a necessidade de politicas públicas direcionadas para o combate do crime organizado e redução de taxa de homicídios em todas as esferas do estado. 
+- **Impacto:** No ano de 2025 o estado do Ceará apresentou um total de 3.178 homicidios. Partindo disso, temos que o estudo identificou tendência de queda nos número de CVLI observados no estado do ceará para o ano de 2026. Entretando, apesar da tendência de redução, os dados ainda são preocupantes, o que mostra a necessidade de politicas públicas direcionadas para o combate do crime organizado e redução de taxa de homicídios em todas as regiões do estado. 
 
 
 
@@ -19,53 +19,26 @@
 
 ## 🎲 Coleta de Dados
 
-- **Fonte:** Os dados foram obtidos por meio do portal da Secretaria de Segurança Pública e Defesa Social (SSPDS) do Estado do Ceará e organizados em um arquivo no formato .csv. Devido à integridade das informações, não foi necessária a aplicação de técnicas para tratamento de valores nulos ou dados faltantes. O conjunto de dados compreende 144 registros mensais, cobrindo o intervalo de 12 anos (2014 a 2025), com a distribuição das ocorrências por gênero (Feminino e Masculino). Para a elaboração das previsões, foram utilizadas as colunas de séries históricas e a variável correspondente ao somatório total de CVLI ocorridas no respectivo mes.
+- **Fonte:** Os dados foram obtidos por meio do portal da Secretaria de Segurança Pública e Defesa Social (SSPDS) do Estado do Ceará e organizados em um arquivo no formato .csv. Devido à integridade das informações, não foi necessária a aplicação de técnicas para tratamento de valores nulos ou dados faltantes. O conjunto de dados compreende 144 registros mensais, cobrindo o intervalo de 12 anos (2014 a 2025), com a distribuição das ocorrências por gênero (Feminino e Masculino). Para a elaboração das previsões, foram utilizadas as colunas de séries históricas e a variável correspondente ao somatório total de CVLI ocorridas no respectivo mês.
 
 ## 📁 Estrutura do Projeto
 
 ```
 
 analise_cvli_ceara/
-├── dados/                                       # 🎲 Dados utilizados no estudo
-│    ├── cvli_processados.csv                    
-│    └── cvli_acumulados_ano.csv                 
-├── dashboard/                                   # 🔍 style Dashboard 
-│    └── style/
-│       └── style.css                         
-│                               
-├── models/                                      # 🔬 Moddelo previsão gerados no estudo
-│    ├── previsao_exponential_smoothing.joblib  
-│    ├── previsao_prophet.joblib  
-│    └── previsao_sarima.joblib                  
-├── img/                                         # 📁 Diretórios com as imagens usadas no README
-│    ├── exponential smoothing/                 
-│    ├── sarima/    
-│    ├── prophet/                       
-│    └── serie/
-├── src/
-│    ├── exponential_smoothing/
-│    │   ├── exponential_smoothing.py            # 🔭 Modelo Preditivo Implementado 
-│    │   ├── modelo.py                           # ▶️ Funções de construção do modelo  
-│    │   └── plots.py                            # 🔎 Visualização dos Gráficos
-│    │
-│    ├── sarima/                             
-│    │   ├── sarima.py                           # 🔭 Modelo Preditivo Implementado 
-│    │   ├── modelo.py                           # ▶️ Funções de construção do modelo  
-│    │   └── plots.py                            # 🔎 Visualização dos Gráficos
-│    │    
-│    └── prophet/                             
-│        ├── prophet_cvli.py                    # 🔭 Modelo Preditivo Implementado 
-│        ├── modelo.py                           # ▶️ Funções de construção do modelo  
-│        └── plots.py                            # 🔎 Visualização dos Gráficos
-├── outputs/                                     # 🎲 Previsões geradas pelos modelos 
-│     ├── previsao_exponential_smoothing.csv
-│     ├── previsao_prophet.csv
-│     └── previsao_sarima.csv                                   
-├── requirements.txt                             # 💻 Bibliotecas usadas no projeto 
-├── .gitignore
-├── index.html                                   # 📊 Análise Descritiva (2014 - 2025)
-├── main.py                                      # 🎯 Função principal 
-└── README.md                                    # 📋 Relatório final do Projeto 
+    ├── dados/                                       # 🎲 Dados utilizados no estudo           
+    ├── dashboard/                                   # 🔍 style Dashboard                                         
+    ├── img/                                         # 📁 Diretórios com as imagens usadas no README
+    ├── outputs/                                     # 🎲 Previsões geradas pelos modelos
+    ├── src/                                         # 🔭 Modelos Preditivos Implementados 
+    │    ├── exponential_smoothing/              
+    │    ├── sarima/                                
+    │    └── prophet/                                                                     
+    ├── requirements.txt                             # 💻 Bibliotecas usadas no projeto 
+    ├── .gitignore
+    ├── index.html                                   # 📊 Análise Descritiva (2014 - 2025)
+    ├── main.py                                      # 🎯 Função principal 
+    └── README.md                                    # 📋 Relatório final do Projeto 
 
 ```
 
@@ -123,7 +96,7 @@ A base de dados compreende 144 observações mensais (2014 a 2025). Os dados de 
 - Ambiente de Desenvolvimento (Visual Studio Code)
 - Python Linguagem de Programação 
 
-## 📈 Modelo SARIMA 
+## 📈 Modelo SARIMAX
 
 Antes de aplicar o modelo SARIMA é necessário verificar a estacionariedade da série temporal. Foi aplicado o teste Augmented Dickey-Fuller (ADF) na Série com intuito de verificar a série. Observpu-se um p-valor de aproximadamente 0.068, indicando que a série original é não-estacionária, com um nível de significância de 5%. Para ajustar esse comportamento, aplicou-se a técnica de diferenciação para remover a tendência modificando o d = 1 e D = 1 nos parêmetros do próprio modelo auto-arima. 
 
@@ -138,28 +111,39 @@ Algoritmo implementado para testar diferentes combinações de parâmetros para 
 
 
 <div align="center">
-  <img src="img/sarima/modelo_auto_arima.png" width="400">
+  <img src="img/sarima/modelo_sarimax.png" width="400">
 </div>
+
+exog foram as variavéis dummy utiizas para o modelo identificar eventos atipicos ocrridos ao longo da série, com por exemplo df['ANOMALIDA_2019'] que representa o aumento significativo observado no primeiro trimestre de 2019. 
 
 Modelo escolhido: 
 
     ARIMA(1, 1, 0)(2, 1, 0)[12]
 
-### Diagnosticos do Modelo SARIMA 
+### Diagnosticos do Modelo SARIMAX
 
 <div align="center">
   <img src="img/sarima/diagnostico_sarima.jpeg" width="600">
 </div>
 
-- **Standardized residual (Resíduo padronizado)**: Na maior parte do tempo, temos que os dados estão bem distribuidos. POr outro lado, temos que há um ponto fora da curva (outlier) no indice 60, onde o erro salta de forma significativa para cima de 6. Por fim, isso evidencia um evento isolado que o modelo não conseguiu prever. 
+- **Standardized residual (Resíduo padronizado)**: Na maior parte do tempo, temos que os dados estão bem distribuidos. Por outro lado, temos um ponto fora da curva (outlier) no indice 60, onde o erro salta de forma significativa para cima de 6. Isso evidencia um evento isolado que o modelo não conseguiu prever. 
 
 - **Histogram(Histograma)**: Os residuos são aproximadamente normais, embora o evento isolado observado pode ter impactado na distribuição. 
 
-- **Theoretical Quantiles (Gráfico Quantil-Quantil)**: Há presença de "caudas pesadas", o que pode signifcar que o modelo tem dificukdade com valores extremos como ponto isolado mostrado no gráfico 1. 
+- **Theoretical Quantiles (Normal Q-Q)**: Há presença de "caudas pesadas", o que pode signifcar que o modelo tem dificukdade com valores extremos como ponto isolado mostrado no gráfico 1. 
 
 - **Correlogram (ACF - Função de Autocorrelação)**:  Pelo o gráfico não há correlação serial residual. Ou seja, o modelo conseguiu "remover" toda a dependência temporal dos dados. 
 
-Um atenção para o modelo é o ponto 60 observado no gráfico 1 (possivelmente ano de 2019 - ano de motim da policia militar no estado do Ceará). Fora isso, o modelo está bem ajustado. 
+Um atenção para o modelo é o ponto 60 observado no gráfico 1 (possivelmente ano de 2019 - ano de motim da policia militar no estado do Ceará).
+
+
+## Após implementar tratamento 
+
+Foram inseridos as variáveis dummies + substituição de outliers pela média dos vizinhos para que o modelo consiga diferenciar os eventos atípicos ocorridos na série. 
+
+<div align="center">
+  <img src="img/sarima/diagnostico_tratamento.png" width="600">
+</div>
 
 ### Treinamento 
 
@@ -173,7 +157,7 @@ Foi realzado uma divisão da base de dados para treinamento e teste como evidên
 
 
 <div align="center">
-  <img src="img/sarima/validacao_modelo_sarima.jpeg" width="1200">
+  <img src="img/sarima/validação.png" width="1200">
 </div>
 
 ### Metricas do SARIMA (MAE | MAPE | RMSE)
@@ -186,7 +170,7 @@ Foi realzado uma divisão da base de dados para treinamento e teste como evidên
 As metricas apresentadas quando a base de dados estava levando em consideração os dados de (2014 - 2025)
 
 <div align="center">
-  <img src="img/sarima/metricas_auto_arima_.png" width="300">
+  <img src="img/sarima/metricas_sarimax.png" width="300">
 </div>
 
 Valores obtidos ao inserir os dados dos meses de jan - mar de 2026. 
@@ -194,24 +178,24 @@ Nesse primeiro trimestre o estado do Ceará apresentou o menor número para prim
 
 ### Interpretação das Metricas do Modelo 
 
-- **MAE (Mean Absolute Error)**: O MAE observado foi de 34.9. Isso indica que o modelo erra, em média, 35 ocorrências de CVLI por período. Dado a volatilidade dos dados é um desenepnho considerável dado a variabilidade do modelo. 
+- **MAE (Mean Absolute Error)**: O MAE observado foi de 35.6. Isso indica que o modelo erra, em média, 36 ocorrências de CVLI por período. Dado a volatilidade dos dados é um desempenho considerável bom. 
 
-- **RMSE (Root Mean Square Error)**: O valor do RMSE (42.6) apresentou um valor reletivamente alto comparado ao MAE. Essa diferença entre as duas métricas sugere que o modelo teve um maior dificuldade, o que pode ser visto pela a inserção de novos dados do ano de 2026 que impactaram nas metricas finais do modelo.
+- **RMSE (Root Mean Square Error)**: O valor do RMSE (43.07) apresentou um valor reletivamente alto comparado ao MAE. Essa diferença entre as duas métricas sugere que o modelo teve um maior dificuldade, o que pode ser visto pela a inserção de novos dados do ano de 2026 que impactaram nas metricas finais do modelo.
 
-- **MAPE**: Com um MAPE de 15.2%, o modelo demonstra uma boa performance preditiva. Isso indica previsões sólidas e confiáveis para séries temporais de fenômenos sociais . 
+- **MAPE**: Com um MAPE de 15.3%, o modelo demonstra uma boa performance preditiva. Isso indica previsões sólidas e confiáveis para séries temporais de fenômenos sociais . 
 
 ### Validação Estatística do Modelo (Ljung-Box)
 
-- **p_valor**: como o valor de p-valor (0.768602
-) é superior a 0.05, então  a hipotése nula deve ser considerada (Os resíduos são ruídos brancos). Ou seja, toda a informação útil foi extraida da base de dados e convertida e previsão. 
+- **p_valor**: como o valor de p-valor (0.79373
+) é superior a 0.05, então  a hipotése nula deve ser considerada (Os resíduos são ruídos brancos). Onde toda a informação útil foi extraida da base de dados e convertida em previsão. 
 
-### Previsão para (abril - Dezembro de 2026) 
+### Previsão para (abril - Agosto de 2026) 
 
 O modelo realizou a previsão com intervalo de confiança de 95% 
 
 
 <div align="center">
-  <img src="img/sarima/previsao_modelo_sarima.png" width="1200">
+  <img src="img/sarima/previsao.png" width="1200">
 </div>
 
 Quanto mais distante são as previsões maior é o nível de incerteza. Por conta disso existe o aumento no intervalo de confiança observado nas previsões.
@@ -234,30 +218,34 @@ Quanto mais distante são as previsões maior é o nível de incerteza. Por cont
 ### Validação do Modelo (Previsões 2024 - 2025)
 
 <div align="center">
-  <img src="img/exponential smoothing/validacao_modelo_exponential_smoonthig.jpeg" width="1200">
+  <img src="img/exponential smoothing/validacao_modelo.png" width="1200">
 </div>
 
 
 ### Metricas do  Exponential Smoothing   (MAE | MAPE | RMSE)
 
 
-- **MAE (Mean Absolute Error)**: O MAE observado foi de 30.48. Isso indica que o modelo erra, em média, ~31 ocorrências de CVLI por período.
+- **MAE (Mean Absolute Error)**: O MAE observado foi de 30.5. Isso indica que o modelo erra, em média, ~31 ocorrências de CVLI por período.
 
-- **RMSE (Root Mean Square Error)**: O valor do RMSE (38.14) apresentou-se próximo ao MAE. Essa baixa diferença entre as duas métricas sugere que o modelo é consistente e não está cometendo erros de grande magnitude.
+- **RMSE (Root Mean Square Error)**: O valor do RMSE (38.1) apresentou-se próximo ao MAE. Essa baixa diferença entre as duas métricas sugere que o modelo é consistente e não está cometendo erros de grande magnitude.
 
-- **MAPE**: Com um MAPE de 13.64%, o modelo demonstra uma boa performance preditiva. Isso indica previsões sólidas e confiáveis para séries temporais de fenômenos sociais. 
+- **MAPE**: Com um MAPE de 13.6%, o modelo demonstra uma boa performance preditiva. Isso indica previsões sólidas e confiáveis para séries temporais de fenômenos sociais. 
 
 ### Validação Estatística do Modelo 
 
-- **p_valor**: como o valor de p-valor (0.471511) é superior a 0.05, então  a hipotése nula deve ser considerada (Os resíduos são ruídos brancos). Ou seja, toda a informação útil foi extraida da base de dados e convertida e previsão. 
+<div align="center">
+  <img src="img/exponential smoothing/validacao_estatistica.png" width="200">
+</div>
+
+- **p_valor**: como o valor de p-valor (0.471511) é superior a 0.05, então  a hipotése nula deve ser considerada (Os resíduos são ruídos brancos). Toda a informação útil foi extraida da base de dados e convertida em previsão. 
 
 
-### Previsão para (abril - Dezembro de 2026) 
+### Previsão para (abril - Agosto de 2026) 
 
-O modelo realizou a previsão com intervalo de confiança de 95% 
+O modelo realizou a previsão com intervalo de confiança de 90% 
 
 <div align="center">
-  <img src="img/exponential smoothing/previsao_intervalo_confianca.png" width="1200">
+  <img src="img/exponential smoothing/previsao_realizada.png" width="1200">
 </div>
 
 Quanto mais distante são as previsões maior é o nível de incerteza. Por conta disso existe o aumento no intervalo de confiança observado nas previsões.
@@ -269,8 +257,10 @@ Quanto mais distante são as previsões maior é o nível de incerteza. Por cont
 
 Modelo implementado no prophet 
 <div align="center">
-  <img src="img/prophet/modelo.png" width="300">
+  <img src="img/prophet/modelo_prophet.png" width="300">
 </div>
+
+As Variáveiis dummy inseridas para diferenciar eventos incomuns na série, como por exemoplo a crise de 2017 ocorrida na segurança pública do estado do Ceará (Ano mais violento da série) 
 
 ### Treinamento 
 
@@ -280,49 +270,19 @@ Divisão treino e teste para validação do modelo implementado
   <img src="img/prophet/treino_teste.png" width="300">
 </div>
 
-### Previsão com intervalo de Confiança 
-
-Previsão do Modelo Prophet com intervalo de confiança de 95% 
-<div align="center">
-  <img src="img/prophet/previsao_modelo.jpeg" width="1200">
-</div>
-
-### Cross-Validation (Validação Cruzada)
+### Validação do Modelo (Previsões 2024 - 2025)
 
 <div align="center">
-  <img src="img/prophet/validacao_cruzada.png" width="500">
+  <img src="img/prophet/validacao.png" width="1200">
 </div>
-
-
-### Remoção dos anos de (2017 - 2019) 
-
-Eu decide remover o intervalo de anos [2017 - 2019], porque eles tinham uma alta variabilidade dos dados. Entre os possíveis motivos são crises ocorridas no estado na segurança pública e alta variabilidade de CVLI. Esse valores estavam impactando de forma consideravel o desempenho do modelo. Além disso, foram adicinados os feriados nacionais para melhorar o desempenho final do modelo prophet. 
-
-<div align="center">
-  <img src="img/prophet/removendo_dados.png" width="500">
-</div>
-
-Adicionando datas de feriados Nacionais para novos observação.  
-
-<div align="center">
-  <img src="img/prophet/modelo_feriados.png" width="300">
-</div>
-
-### Cross-Validation (Validação Cruzada)
-
-<div align="center">
-  <img src="img/prophet/removendo_anos_Cross_validation.png" width="500">
-</div>
-
-A remoção do intervalo correspondente aos anos de 2017 a 2019 justifica-se por uma quebra estrutural na série temporal (causada por fatores externos), que introduziu ruídos e distorceu os componentes de tendência e sazonalidade capturados pelo algoritmo original. No ano de 2017 o estado apresentou um ano com maior número de assassinatos na série. Por outro lado, em 2019 o estado apresentou reduções consideraveis nos acumaldos de CVLI, o que culminou no menor valor acumulado em toda a série. Portando, a decisão de remover o modelo gerou ganhos no estudo como pode ser obervado na comparação dos dois modelos. 
-
 
 ### Previsão com intervalo de Confiança 
 
-Previsão do Modelo Prophet com intervalo de confiança de 95% 
+Previsão do Modelo Prophet com intervalo de confiança de 90% 
 <div align="center">
-  <img src="img/prophet/previsa_removendo_dados.jpeg" width="1200">
+  <img src="img/prophet/previsao.png" width="1200">
 </div>
+
 
 ## 📊 Resultados
 
@@ -331,29 +291,14 @@ Resultados obtidos na implementação dos modelos (Exponential Smoothing, Sarima
 
 | Modelo                |  MAPE  |  MAE  | RMSE | LB_STAT(Lag 10) | LB_pVALUE  |
 |-----------------------|--------|-------|-----|-----------------|------------|
-| Sarima                | 15.17% | 34.89| 42.55 |  6.533792 |0.768602 |
-| Exponential Smoothing | 13.64% | 30.48| 38.14 |  9.652282 |0.471511 | 
-|prophet |~19.23% |~60.85|~82.20|~|~|
-|prophet (Modificado) | ~11.46% |~32.59|~38.71|~|~|
+| Sarima                | 15.3% | 35.6| 43.1 |  6.251257 |0.79373 |
+| Exponential Smoothing | 13.6% | 30.5| 38.1 |  9.652282 |0.471511 | 
+|prophet |15.4% |37.5|43.90|~|~|
 
-(~) -> Aproximado 
 
-Resultados das previsões do modelos
+✅ **Exponential Smoothing** alcançou o menor MAPE (13.6%) em média entre todos os modelos testados, superando o prophet (15.4%) e o SARIMA (15,3%).
 
-| Modelo                |  Consolidados (Jan - Mar)   | Melhor (Cenário) | Previsto (Abr - Dez)| Pior (Cenário)|Total (2026) Previsto |
-|-----------------------|--------|-------|-------|-------|-----|
-| Exponential Smoothing | 472 |703| 1255|2026 | 1727|  
-| Sarima                 |472 |733 |1342| 2345| 1814 |  
-| Prophet               |472| 1326 |1982 |3593 |2454|
-| Prophet (Base Reduzida)  |472| 1376 |1987 |2615|2459|
-
-```
- Total (2026) Previsto = Consolidados + Previsto
-```
-
-✅ **Prophet (Modificado)** alcançou o menor MAPE (~11,46%) em média entre todos os modelos testados, superando o Exponential Smoothing (13,64%) e o SARIMA (15,17%), além de reduzir drasticamente o erro do Prophet original (~19,23%). Embora a base de dados utilizada para aplicação do modelo foi reduzida.  
-
-Menor Erro Absoluto: O modelo também liderou nas métricas absolutas, registrando um MAE de 32,59 e um RMSE de 38,71. Isso significa que as suas previsões, em média, aproximam-se muito mais dos valores reais observados na série.
+Menor Erro Absoluto: O modelo também liderou nas métricas absolutas, registrando um MAE de 30,5 e um RMSE de 38,1. Isso significa que as suas previsões, em média, aproximam-se muito mais dos valores reais observados na série.
 
 
 ## ▶️ Como Reproduzir o Programa 

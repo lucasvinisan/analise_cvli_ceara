@@ -3,6 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from statsmodels.tsa.api import ExponentialSmoothing
 from sklearn.metrics import mean_absolute_error, mean_absolute_percentage_error, mean_squared_error
+import matplotlib.dates as mdates
+
 
 #Definindo globalmente o style dos plots 
 plt.style.use('grayscale') 
@@ -10,7 +12,7 @@ plt.style.use('grayscale')
 def plotar_validacao(df, test, forecast): 
 
 
-    fig, ax1 = plt.subplots(figsize=(12, 8))
+    fig, ax1 = plt.subplots(figsize=(12, 5))
 
     # Série histórica completa (treino)
     train = df['2014-01-01':'2023-12-01']
@@ -43,7 +45,6 @@ def plotar_validacao(df, test, forecast):
     ax1.set_ylabel('Ocorrências CVLI')
     ax1.legend()
     ax1.grid(True, alpha=0.3)
-    
     plt.tight_layout()
     plt.show()
 
@@ -58,9 +59,9 @@ def plotar_previsao_2026(previsao):
         previsao.index.to_timestamp(),
         previsao['lower'],
         previsao['upper'],
-        alpha=0.2,
+        alpha=0.1,
         color='blue',
-        label='IC 95%'
+        label='IC 90%'
     )
 
     for idx, row in previsao.iterrows():
@@ -73,9 +74,11 @@ def plotar_previsao_2026(previsao):
             fontsize=8
         )
 
-    ax.set_title('Previsão CVLI (Exponential Smoothing) — Abril a Dezembro 2026',
-                 fontsize=14, fontweight='bold')
-    ax.set_xlabel('MES')
+
+    ax.xaxis.set_major_locator(mdates.MonthLocator())
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
+    ax.set_title('Previsão CVLI (Exponential Smoothing)', fontsize=14, fontweight='bold')
+
     ax.set_ylabel('CVLI')
     ax.legend()
     ax.grid(True, alpha=0.3)
