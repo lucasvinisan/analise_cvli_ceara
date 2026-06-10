@@ -31,5 +31,5 @@ def abrir_dashboard():
         print(f"Erro: O arquivo {caminho_html} não foi encontrado.")
     
 if __name__ == "__main__":
-    executar()
-    #abrir_dashboard()
+    #executar()
+    abrir_dashboard()
