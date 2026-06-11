@@ -2,20 +2,18 @@
 
 ## 📄 Resumo
     
-- **Problema**: As altas taxas de criminalidade são um dos problemas mais graves enfrentados pelo estado do Ceará nos últimos anos. Partindo desse ponto, como criar um estudo que evidencie o comportamento dos número de homicídios no estado do Ceará, com a finalidade de obter informações relevantes acerca dessa problemática?
+- **Problema**: As altas taxas de criminalidade são um dos problemas mais graves enfrentados pelo estado do Ceará nos últimos anos. Partindo desse ponto, como criar um estudo que evidencie o comportamento dos números de homicídios no estado do Ceará, com a finalidade de obter informações relevantes acerca dessa problemática?
 
 - **Solução**: Realizar um estudo descritivo sobre os dados acumulados de CVLI (Crimes Violentos Letais e Intencionais) entre os anos de 2014 e 2025, e implementar algoritmos preditivos com o intuito de obter possíveis cenários para os valores acumulados de CVLI no ano de 2026 no Ceará.
 
-- **Impacto:** No ano de 2025 o estado do Ceará apresentou um total de 3.178 homicidios. Partindo disso, temos que o estudo identificou tendência de queda nos número de CVLI observados no estado do ceará para o ano de 2026. Entretando, apesar da tendência de redução, os dados ainda são preocupantes, o que mostra a necessidade de politicas públicas direcionadas para o combate do crime organizado e redução de taxa de homicídios em todas as regiões do estado. 
-
-
+- **Impacto:** No ano de 2025, o estado do Ceará apresentou um total de 3.178 homicídios. Partindo disso, o estudo identificou uma tendência de queda no número de CVLI observados no estado para o ano de 2026. Entretanto, apesar da tendência de redução, os dados ainda são preocupantes, o que mostra a necessidade de políticas públicas direcionadas para o combate ao crime organizado e a redução das taxas de homicídios em todas as regiões do estado.
 
 
 ## 📋 Introdução e Contextualização
 
-- **Objetivo:** O objetivo principal deste estudo é extrair insights estratégicos sobre os índices de CVLI no estado do Ceará. A análise identifica padrões, como os meses com maior incidência de crimes, visando fornecer infromações fundamentais sobre o número de homicídios no Ceará.
+- **Objetivo:** O objetivo principal deste estudo é extrair insights estratégicos sobre os índices de CVLI no estado do Ceará. A análise identifica padrões, como os meses com maior incidência de ocorrências, visando fornecer informações fundamentais sobre o comportamento desses crimes no estado.
 
-- **Metodologia:** Na análise preditiva, as ferramentas utilizadas foram a linguagem de programação Python, empregada na análise exploratória e na construção dos modelos preditivos foram impleemntadas três métodos de modelagem de séries temporais: Sarima, Exponential Smoothing e Prophet. Para a análise descritiva, utilizou-se o Tableau para a criação e visualização do dashboard e o Python para extração e tratamento dos dados.  
+- **Metodologia:** Na análise preditiva, as ferramentas utilizadas envolveram a linguagem de programação Python, empregada tanto na análise exploratória quanto na construção dos modelos. Para a modelagem de séries temporais, foram implementados três métodos: SARIMA, Exponential Smoothing e Prophet. Já para a análise descritiva, utilizou-se o Tableau na criação e visualização do dashboard, e o Python para a extração e o tratamento dos dados.
 
 ## 🎲 Coleta de Dados
 
@@ -98,7 +96,7 @@ A base de dados compreende 144 observações mensais (2014 a 2025). Os dados de 
 
 ## 📈 Modelo SARIMAX
 
-Antes de aplicar o modelo SARIMA é necessário verificar a estacionariedade da série temporal. Foi aplicado o teste Augmented Dickey-Fuller (ADF) na Série com intuito de verificar a série. Observpu-se um p-valor de aproximadamente 0.068, indicando que a série original é não-estacionária, com um nível de significância de 5%. Para ajustar esse comportamento, aplicou-se a técnica de diferenciação para remover a tendência modificando o d = 1 e D = 1 nos parêmetros do próprio modelo auto-arima. 
+Antes de aplicar o modelo SARIMAX é necessário verificar a estacionariedade da série temporal. Foi aplicado o teste Augmented Dickey-Fuller (ADF) na Série com intuito de verificar a série. Observpu-se um p-valor de aproximadamente 0.068, indicando que a série original é não-estacionária, com um nível de significância de 5%. Para ajustar esse comportamento, aplicou-se a técnica de diferenciação para remover a tendência modificando o d = 1 e D = 1 nos parêmetros do próprio modelo auto-arima. 
 
 
 <div align="center">
@@ -107,14 +105,11 @@ Antes de aplicar o modelo SARIMA é necessário verificar a estacionariedade da 
 
 ### Auto-Arima 
 
-Algoritmo implementado para testar diferentes combinações de parâmetros para selecionar o melhor ajuste com base nos critérios estatísticos.
-
-
 <div align="center">
   <img src="img/sarima/modelo_sarimax.png" width="400">
 </div>
 
-exog foram as variavéis dummy utiizas para o modelo identificar eventos atipicos ocrridos ao longo da série, com por exemplo df['ANOMALIDA_2019'] que representa o aumento significativo observado no primeiro trimestre de 2019. 
+Algoritmo implementado para testar diferentes combinações de parâmetros e selecionar o melhor ajuste com base em critérios estatísticos. O parâmetro exog recebeu as variáveis dummy utilizadas para o modelo identificar eventos atípicos ocorridos ao longo da série. Um exemplo é a variável ANOMALIA_2020, que representa o aumento significativo de homicídios observado durante a crise policial daquele ano.
 
 Modelo escolhido: 
 
@@ -126,24 +121,19 @@ Modelo escolhido:
   <img src="img/sarima/diagnostico_sarima.jpeg" width="600">
 </div>
 
-- **Standardized residual (Resíduo padronizado)**: Na maior parte do tempo, temos que os dados estão bem distribuidos. Por outro lado, temos um ponto fora da curva (outlier) no indice 60, onde o erro salta de forma significativa para cima de 6. Isso evidencia um evento isolado que o modelo não conseguiu prever. 
-
-- **Histogram(Histograma)**: Os residuos são aproximadamente normais, embora o evento isolado observado pode ter impactado na distribuição. 
-
-- **Theoretical Quantiles (Normal Q-Q)**: Há presença de "caudas pesadas", o que pode signifcar que o modelo tem dificukdade com valores extremos como ponto isolado mostrado no gráfico 1. 
-
-- **Correlogram (ACF - Função de Autocorrelação)**:  Pelo o gráfico não há correlação serial residual. Ou seja, o modelo conseguiu "remover" toda a dependência temporal dos dados. 
-
-Um atenção para o modelo é o ponto 60 observado no gráfico 1 (possivelmente ano de 2019 - ano de motim da policia militar no estado do Ceará).
-
-
 ## Após implementar tratamento 
-
-Foram inseridos as variáveis dummies + substituição de outliers pela média dos vizinhos para que o modelo consiga diferenciar os eventos atípicos ocorridos na série. 
-
 <div align="center">
   <img src="img/sarima/diagnostico_tratamento.png" width="600">
 </div>
+
+- **Standardized residual (Resíduo padronizado)**: Antes: Havia um outlier extremo (erro > 6) no índice 60 (janeiro de 2019), causado por crises de segurança pública.
+
+- **Histogram(Histograma)**: Histograma (Histogram plus estimated density): * A curva de erro real (KDE) ajustou-se quase perfeitamente à curva de normalidade, comprovando que os erros do modelo são equilibrados. 
+
+- **Theoretical Quantiles (Normal Q-Q)**: Os pontos alinharam-se sobre a reta vermelha de 45°, o que valida estatisticamente o pressuposto de normalidade dos resíduos e prova que o modelo lida bem com os dados atuais. 
+
+- **Correlogram (ACF - Função de Autocorrelação)**: Nenhum valor ultrapassou a faixa cinza de significância. Isso prova a ausência de autocorrelação, ou seja, o modelo capturou 100% da dependência temporal e o que sobrou é apenas ruído aleatório (ruído branco).
+
 
 ### Treinamento 
 
@@ -160,14 +150,7 @@ Foi realzado uma divisão da base de dados para treinamento e teste como evidên
   <img src="img/sarima/validação.png" width="1200">
 </div>
 
-### Metricas do SARIMA (MAE | MAPE | RMSE)
-
-
-<div align="center">
-  <img src="img/sarima/Metricas_SARIMA.png" width="300">
-</div>
-
-As metricas apresentadas quando a base de dados estava levando em consideração os dados de (2014 - 2025)
+### Metricas do SARIMAX (MAE | MAPE | RMSE)
 
 <div align="center">
   <img src="img/sarima/metricas_sarimax.png" width="300">
@@ -260,7 +243,7 @@ Modelo implementado no prophet
   <img src="img/prophet/modelo_prophet.png" width="300">
 </div>
 
-As Variáveiis dummy inseridas para diferenciar eventos incomuns na série, como por exemoplo a crise de 2017 ocorrida na segurança pública do estado do Ceará (Ano mais violento da série) 
+ As Variáveis dummy inseridas para diferenciar eventos incomuns na série, como por exemoplo a crise de 2017 ocorrida na segurança pública do estado do Ceará (Ano mais violento da série).
 
 ### Treinamento 
 
@@ -291,14 +274,16 @@ Resultados obtidos na implementação dos modelos (Exponential Smoothing, Sarima
 
 | Modelo                |  MAPE  |  MAE  | RMSE | LB_STAT(Lag 10) | LB_pVALUE  |
 |-----------------------|--------|-------|-----|-----------------|------------|
-| Sarima                | 15.3% | 35.6| 43.1 |  6.251257 |0.79373 |
+| Sarimax                | 15.3% | 35.6| 43.1 |  6.251257 |0.79373 |
 | Exponential Smoothing | 13.6% | 30.5| 38.1 |  9.652282 |0.471511 | 
 |prophet |15.4% |37.5|43.90|~|~|
 
 
-✅ **Exponential Smoothing** alcançou o menor MAPE (13.6%) em média entre todos os modelos testados, superando o prophet (15.4%) e o SARIMA (15,3%).
+✅ **Exponential Smoothing (Vencedor)**: Alcançou o melhor desempenho geral, registrando o menor MAPE (13,6%), além dos menores erros absolutos (MAE de 30,5 e RMSE de 38,1). Suas previsões foram as que mais se aproximaram da realidade observada no início de 2026.
 
-Menor Erro Absoluto: O modelo também liderou nas métricas absolutas, registrando um MAE de 30,5 e um RMSE de 38,1. Isso significa que as suas previsões, em média, aproximam-se muito mais dos valores reais observados na série.
+**SARIMAX:** Apresentou uma performance competitiva com um MAPE de 15,3% (MAE: 35,6 / RMSE: 43,1). O teste de Ljung-Box confirmou a independência dos resíduos (p-valor: 0,793), validando o ajuste estatístico.
+
+**Prophet:** Obteve o maior erro médio da validação, com um MAPE de 15,4% (MAE: 37,5 / RMSE: 43,90), mostrando-se ligeiramente menos responsivo à quebra estrutural do período recente.
 
 
 ## ▶️ Como Reproduzir o Programa 
